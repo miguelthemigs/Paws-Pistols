@@ -9,4 +9,8 @@ object ScoreManager { // object keyword creates a singleton. This means you get 
             bestTime = time
         }
     }
+
+    fun getBestTime(): Long {
+        return bestTime
+    }
 }

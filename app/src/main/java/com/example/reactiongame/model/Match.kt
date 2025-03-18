@@ -30,7 +30,7 @@ class Match {
         return when {
             playerOneScore == 2 -> 1
             playerTwoScore == 2 -> 2
-            roundsPlayed == 3 -> 0
+            roundsPlayed == 3 -> 0 // zero = draw
             else -> null
         }
     }
