@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,8 +37,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.reactiongame.R
 import com.example.reactiongame.model.ScoreManager
+import com.example.reactiongame.viewmodel.GameViewModel
 
 /*
  Will have:
@@ -48,12 +51,27 @@ import com.example.reactiongame.model.ScoreManager
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun StartScreen() {
+fun StartScreen(
+    onStartClick: () -> Unit,
+    gameViewModel: GameViewModel = viewModel()
+) {
     val highestScore = if (ScoreManager.getBestTime() != Long.MAX_VALUE) {
         ScoreManager.getBestTime().toString()
     } else {
         "N/A"
     }
+
+    // Register sensor listener when StartScreen is composed.
+    LaunchedEffect(Unit) {
+        gameViewModel.registerAccelerometerListener()
+    }
+
+    if (gameViewModel.isGameInProgress) { // if it was shaked, it is the same as the button
+        onStartClick()
+        gameViewModel.unregisterAccelerometerListener()
+    }
+
+
 
     Scaffold(
         topBar = {
@@ -148,7 +166,7 @@ fun StartScreen() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Button(onClick = { /* TODO: Start the game */ }) {
+                Button(onClick = { onStartClick() }) {
                     Text(text = "Start", color = Color.Black)
                 }
 

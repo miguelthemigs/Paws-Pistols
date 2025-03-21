@@ -11,8 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.reactiongame.ui.theme.ReactionGameTheme
+import com.example.reactiongame.view.GameScreen
 import com.example.reactiongame.view.StartScreen
+import com.example.reactiongame.viewmodel.GameViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,8 +26,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ReactionGameTheme {
+            val navController = rememberNavController()
+                val gameViewModel: GameViewModel = viewModel()
 
-                    StartScreen()
+                NavHost(navController = navController, startDestination = "startScreen") {
+                    composable("startScreen") {
+                        StartScreen(onStartClick = { navController.navigate("gameScreen") })
+                    }
+
+                    composable("gameScreen") {
+                        GameScreen()
+                    }
+                }
+
+
 
             }
         }
