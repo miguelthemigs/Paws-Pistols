@@ -1,8 +1,8 @@
 package com.example.reactiongame.model
 
 class Match {
-    private var playerOneScore: Int = 0
-    private var playerTwoScore: Int = 0
+    var playerOneScore: Int = 0
+    var playerTwoScore: Int = 0
     private var roundsPlayed: Int = 0
 
     fun playRound(playerOneTime: Long, playerTwoTime: Long){
@@ -25,6 +25,7 @@ class Match {
     fun isMatchOver(): Boolean {
         return (playerOneScore == 2 || playerTwoScore == 2 || roundsPlayed == 3)
     }
+
 
     fun getWinner(): Int? {
         return when {

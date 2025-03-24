@@ -66,10 +66,13 @@ fun StartScreen(
         gameViewModel.registerAccelerometerListener()
     }
 
-    if (gameViewModel.isGameInProgress) { // if it was shaked, it is the same as the button
-        onStartClick()
-        gameViewModel.unregisterAccelerometerListener()
+    LaunchedEffect(gameViewModel.isGameInProgress) {
+        if (gameViewModel.isGameInProgress) {
+            onStartClick()
+            gameViewModel.unregisterAccelerometerListener()
+        }
     }
+
 
 
 
