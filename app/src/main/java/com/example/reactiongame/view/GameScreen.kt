@@ -19,7 +19,7 @@ import com.example.reactiongame.viewmodel.GameViewModel
 fun GameScreen(
         gameViewModel: GameViewModel = viewModel()
 ) {
-        // Optionally, start the game automatically when the screen is composed.
+        // start the game automatically when the screen is composed.
         LaunchedEffect(Unit) {
                 if (!gameViewModel.isGameInProgress) {
                         gameViewModel.startGame()
@@ -37,12 +37,14 @@ fun GameScreen(
                                 .clickable {
                                         if (gameViewModel.roundActive) {
                                                 gameViewModel.onPlayer2Tap()
+                                        } else {
+                                                gameViewModel.onWrongTapPlayer2()
                                         }
                                 },
                         contentAlignment = Alignment.Center
                 ) {
                         Text(
-                                text = "Player 2 Score: ${gameViewModel.player2Score}",
+                                text = "Player 2 Score: ${gameViewModel.player2Score} | ${gameViewModel.player2ReactionTime}",
                                 style = MaterialTheme.typography.headlineMedium
                         )
                 }
@@ -74,7 +76,7 @@ fun GameScreen(
                                 .height(2.dp)
                                 .background(Color.Black)
                 )
-                // Bottom half for Player 1 (normal orientation)
+                // Bottom half for Player 1
                 Box(
                         modifier = Modifier
                                 .weight(1f)
@@ -83,12 +85,14 @@ fun GameScreen(
                                 .clickable {
                                         if (gameViewModel.roundActive) {
                                                 gameViewModel.onPlayer1Tap()
+                                        } else {
+                                                gameViewModel.onWrongTapPlayer1()
                                         }
                                 },
                         contentAlignment = Alignment.Center
                 ) {
                         Text(
-                                text = "Player 1 Score: ${gameViewModel.player1Score}",
+                                text = "Player 1 Score: ${gameViewModel.player1Score} | ${gameViewModel.player1ReactionTime}",
                                 style = MaterialTheme.typography.headlineMedium
                         )
                 }

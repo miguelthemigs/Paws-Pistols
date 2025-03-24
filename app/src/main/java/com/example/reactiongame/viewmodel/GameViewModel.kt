@@ -13,6 +13,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reactiongame.model.Match
 import com.example.reactiongame.model.ScoreManager
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -22,6 +23,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private var currentMatch by mutableStateOf(Match())
     var isGameInProgress by mutableStateOf(false)
     // Game state variables
+
+    var wrongTapPlayer1 by mutableStateOf(false)
+        private set
+    var wrongTapPlayer2 by mutableStateOf(false)
+        private set
 
     var roundActive by mutableStateOf(false)
         private set
@@ -43,6 +49,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     // Time when "GO" is shown
     private var roundStartTime by mutableStateOf(0L)
+
+    // For managing the delayed "GO!" coroutine so it can be cancelled on a wrong tap
+    private var roundJob: Job? = null
+
 
     private val sensorManager =
         getApplication<Application>().getSystemService(SensorManager::class.java)
@@ -114,7 +124,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         player2ReactionTime = null
         roundNumber++
         roundMessage = "Get Ready..."
-        viewModelScope.launch {
+        roundJob?.cancel()
+        roundJob = viewModelScope.launch {
             // Random delay between 1 and 5 seconds
             val delayTime = Random.nextLong(1000L, 5000L)
             delay(delayTime)
@@ -140,6 +151,21 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun onWrongTapPlayer1() {
+        if (!roundActive) {
+            wrongTapPlayer1 = true
+            roundJob?.cancel()
+            evaluateRound()
+        }
+    }
+    fun onWrongTapPlayer2() {
+        if (!roundActive) {
+            wrongTapPlayer2 = true
+            roundJob?.cancel()
+            evaluateRound()
+        }
+    }
+
     // Check if both players have tapped, then evaluate the round.
     private fun checkIfRoundComplete() {
         if (player1ReactionTime != null && player2ReactionTime != null) {
@@ -150,21 +176,38 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     // Evaluate which player reacted faster, update the score and prepare for the next round (or end the match).
     private fun evaluateRound() {
-       roundActive = false
-        currentMatch.playRound(player1ReactionTime!!, player2ReactionTime!!)
-        player1Score = currentMatch.playerOneScore
-        player2Score = currentMatch.playerTwoScore
+        roundActive = false
+        if (wrongTapPlayer1){
+            player2Score++
+            wrongTapPlayer1 = false
+            roundMessage = "Player 2 wins round. Player 1 tapped early"
+            currentMatch.roundsPlayed++
+            currentMatch.playerTwoScore++
 
-        roundMessage = if (player1ReactionTime!! < player2ReactionTime!!){
-            "Player 1 wins round: ${player1ReactionTime}ms"
-        } else if (player1ReactionTime!! > player2ReactionTime!!){
-            "Player 2 wins round: ${player2ReactionTime}ms"
-        } else {
-            "Tie: ${player1ReactionTime}ms"
+        } else if (wrongTapPlayer2){
+            player1Score++
+            wrongTapPlayer2 = false
+            roundMessage = "Player 1 wins round. Player 2 tapped early"
+            currentMatch.roundsPlayed++
+            currentMatch.playerOneScore++
+
+        } else{
+            currentMatch.playRound(player1ReactionTime!!, player2ReactionTime!!)
+            player1Score = currentMatch.playerOneScore
+            player2Score = currentMatch.playerTwoScore
+
+            roundMessage = if (player1ReactionTime!! < player2ReactionTime!!){
+                "Player 1 wins round: ${player1ReactionTime}ms"
+            } else if (player1ReactionTime!! > player2ReactionTime!!){
+                "Player 2 wins round: ${player2ReactionTime}ms"
+            } else {
+                "Tie: ${player1ReactionTime}ms"
+            }
         }
+
         // Check for a win in best of 3
         if (currentMatch.isMatchOver()) {
-            roundMessage = "Match over! Winner: ${currentMatch.getWinner()}"
+            roundMessage = "Match over! Winner: ${currentMatch.getWinner()} | ${player1Score} X ${player2Score}"
             endGame()
 
         } else {

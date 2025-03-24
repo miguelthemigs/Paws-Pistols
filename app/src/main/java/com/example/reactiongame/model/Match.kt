@@ -3,7 +3,7 @@ package com.example.reactiongame.model
 class Match {
     var playerOneScore: Int = 0
     var playerTwoScore: Int = 0
-    private var roundsPlayed: Int = 0
+    var roundsPlayed: Int = 0
 
     fun playRound(playerOneTime: Long, playerTwoTime: Long){
         val attemptOne = ReactionAttempt(playerOneTime)
