@@ -1,5 +1,6 @@
 package com.example.reactiongame.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,8 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.reactiongame.R
 import com.example.reactiongame.viewmodel.GameViewModel
 
 @Composable
@@ -43,10 +48,28 @@ fun GameScreen(
                                 },
                         contentAlignment = Alignment.Center
                 ) {
-                        Text(
-                                text = "Player 2 Score: ${gameViewModel.player2Score} | ${gameViewModel.player2ReactionTime}",
-                                style = MaterialTheme.typography.headlineMedium
-                        )
+                        Column(
+                                modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(top = 16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Top
+                        ) {
+                                Text(
+                                        text = "Player 2 Score: ${gameViewModel.player2Score} | ${gameViewModel.player2ReactionTime}",
+                                        style = MaterialTheme.typography.headlineMedium
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Image(
+                                        painter = painterResource(id = R.drawable.shooter),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                                .size(130.dp)
+                                                .graphicsLayer { rotationZ = 280f }
+
+                                )
+                        }
                 }
                 // Divider line between halves
                 Box(
@@ -59,7 +82,8 @@ fun GameScreen(
                 Box(
                         modifier = Modifier
                                 .fillMaxWidth()
-                                .height(150.dp)
+                                .graphicsLayer { rotationZ = 180f }
+                                .height(75.dp)
                                 .background(Color.DarkGray),
                         contentAlignment = Alignment.Center
                 ) {
@@ -69,6 +93,20 @@ fun GameScreen(
                                 color = Color.White
                         )
                 }
+                Box(
+                        modifier = Modifier
+                                .fillMaxWidth()
+                                .height(75.dp)
+                                .background(Color.DarkGray),
+                        contentAlignment = Alignment.Center
+                ) {
+                        Text(
+                                text = gameViewModel.roundMessage,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Color.White
+                        )
+                }
+
                 // Divider line between middle and bottom
                 Box(
                         modifier = Modifier
@@ -91,10 +129,29 @@ fun GameScreen(
                                 },
                         contentAlignment = Alignment.Center
                 ) {
-                        Text(
-                                text = "Player 1 Score: ${gameViewModel.player1Score} | ${gameViewModel.player1ReactionTime}",
-                                style = MaterialTheme.typography.headlineMedium
-                        )
+                        Column(
+                                modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(top = 16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Top
+                        ) {
+                                Text(
+                                        text = "Player 1 Score: ${gameViewModel.player1Score} | ${gameViewModel.player1ReactionTime}",
+                                        style = MaterialTheme.typography.headlineMedium
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Image(
+                                        painter = painterResource(id = R.drawable.shooter),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                                .size(130.dp)
+                                                .graphicsLayer { rotationZ = 280f }
+
+                                )
+                        }
                 }
+
         }
 }
