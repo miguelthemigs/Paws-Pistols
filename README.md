@@ -11,7 +11,6 @@ Welcome to **Paws & Pistols** – the best cat cowboy game on this side of the s
 - [How to Play](#how-to-play)
 - [Tech Stack](#tech-stack)
 
-
 ---
 
 ## Overview
@@ -83,5 +82,8 @@ In **Paws & Pistols**, two feline cowboys face off in a best-of-three reaction d
 
 - **Material3 Components:**  
   To provide modern design components and theming consistent with current Android design guidelines.
+
+  ## Download Link
+  -- https://github.com/miguelthemigs/Paws-Pistols/releases/download/game/app-debug.apk
 
 
